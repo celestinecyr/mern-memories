@@ -28,5 +28,4 @@ mongoose.connect(CONNECTION_URL, { useNewUrlParser: true, useUnifiedTopology: tr
     .catch((error) => console.log(error.message));
 
 //mongoose.set('useFindAndModify', false);
-
 //.env file --> npm i dotenv
