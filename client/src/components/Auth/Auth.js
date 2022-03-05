@@ -4,26 +4,41 @@ import { GoogleLogin } from 'react-google-login';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
-
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import { AUTH } from '../../constants/actionTypes';
 import useStyles from './styles';
 import Input from './Input';
 import Icon from './icon';
+import { signin, signup } from '../../actions/auth'
+
+const initialState = { firstName: '', lastName: '', email: '', password: '', confirmPassword: '' }      //input 'name'
 
 const Auth = () => {
   const classes = useStyles();
   const [showPassword,setShowPassword] = useState(false);      //set false at the start
   const [isSignup, setIsSignup] = useState(false);
+  const [formData, setFormData] = useState(initialState);
+
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const handleSubmit = () => {
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    //console.log(formData);
+    if(isSignup){
+      //signup logic
+      //console.log(isSignup);
+      dispatch(signup(formData, history));
+    } else {
+      //sign in logic
+      dispatch(signin(formData, history))
+    }
+  };
 
-  }
-
-  const handleChange = () => {
-
-  }
+  const handleChange = (event) => {
+    setFormData({ ...formData, [event.target.name]: event.target.value})    
+    //spread all the properties but only changing the current target value - meaning the current input that we have in there
+  };
 
   const handleShowPassword = () => setShowPassword((prevShowPassword)=> !prevShowPassword);
   // arrow function | handleShowPassword toggles the state of the password. 
@@ -41,14 +56,12 @@ const Auth = () => {
     const token = res?.tokenId;
 
     try{
-      dispatch({ type: 'AUTH', data:{ result, token } });
+      dispatch({ type: AUTH, data:{ result, token } });
       //after dispatching have to redirect back to the home:
       history.push('/');
-
     } catch(error) {
       console.log(error);
     }
-
   };
 
   const googleFailure = (error) => {
@@ -105,9 +118,6 @@ const Auth = () => {
 
         </form>
       </Paper>
-      {/* <div color="black">
-        AUTH
-      </div> */}
     </Container>
     
   );

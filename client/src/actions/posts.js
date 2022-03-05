@@ -1,5 +1,4 @@
 import { FETCH_ALL, CREATE, UPDATE, DELETE } from '../constants/actionTypes';
-
 import * as api from '../api';              //import everything from the actions as api
 
 //Action Creators - functions that return actions

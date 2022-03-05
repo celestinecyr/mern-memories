@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { AppBar, Avatar, Toolbar, Typography, Button } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
-
+import decode from 'jwt-decode';
 import useStyles from './styles';
 import memories from '../../images/memories.png';
 
@@ -29,6 +29,12 @@ const Navbar = () => {
       const token = user?.token       //does token exist? if yes send it to 'token' variable
       //if using manual sign up... can check JWT
 
+      if(token) {                                               //if token exist,
+        const decodedToken = decode(token);                     //decode token
+
+        if(decodedToken.exp * 1000 < new Date().getTime()) logout();     //if decodedToken.exp * 1000 (in milliseconds) is lower than current time in milliseconds --> logout
+      }
+      
       setUser(JSON.parse(localStorage.getItem('profile')))
     }, [location]);   
                         

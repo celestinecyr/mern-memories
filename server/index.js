@@ -3,7 +3,9 @@ import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import postRoutes from './routes/posts.js'
+
+import postRoutes from './routes/posts.js';
+import userRoutes from './routes/users.js'
 
 const app = express();
 dotenv.config();
@@ -16,6 +18,7 @@ app.use(cors());
 
 //use express middleware to connect routes to our application:
 app.use('/posts', postRoutes);                 //every route inside postRoutes is going to start with posts. (this must be placed below cors)
+app.use('/user', userRoutes);
 
 //connect server application with real database - for that we use mongodb, the cloud/atlast version
 // https://www.mongodb.com/cloud/atlas - host database on their cloud

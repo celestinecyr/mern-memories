@@ -4,12 +4,13 @@ import mongoose from 'mongoose';
 const postSchema = mongoose.Schema({
     title: String,
     message: String,
+    name: String,
     creator: String,
     tags: [String],
     selectedFile: String,
-    likeCount: {
-        type: Number,
-        default: 0              //have to type it this way bc we wanna set a default value
+    likes: {
+        type: [String],         //an array of ids
+        default: []             //have to type it this way bc we wanna set a default value
     },
     createdAt: {
         type: Date,

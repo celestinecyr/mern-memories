@@ -1,14 +1,13 @@
-import { AUTH, LOGOUT } from '../constants/actionTypes';
+import * as actionType from '../constants/actionTypes';
 
-const authReducer= (state = { authData: null}, action)=> {
+const authReducer = (state = { authData: null}, action) => {
     switch(action.type) {
-        case AUTH:
-            //console.log(action?.data);
+        case actionType.AUTH:
+            console.log(state);
             //we want to save token in local storage so that when we refresh the page the browser is still going to know that we're logged in
-            localStorage.setItem('profile', JSON.stringify( {...action?.data} ));           //setting all of data available, all the data for the login-->to local storage
+            localStorage.setItem( 'profile', JSON.stringify({...action?.data}) );           //setting all of data available, all the data for the login-->to local storage
             return { ...state , authData: action?.data};
-
-        case LOGOUT:
+        case actionType.LOGOUT:
             localStorage.clear();
             return { ...state , authData: null };
             
