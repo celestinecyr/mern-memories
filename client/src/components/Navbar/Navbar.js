@@ -4,7 +4,8 @@ import { AppBar, Avatar, Toolbar, Typography, Button } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import decode from 'jwt-decode';
 import useStyles from './styles';
-import memories from '../../images/memories.png';
+import logo from '../../images/memoriesLogo.png';
+import logoText from '../../images/memoriesText.png';
 
 const Navbar = () => {
     const classes = useStyles();
@@ -26,7 +27,7 @@ const Navbar = () => {
     //without useEffect, we had to google sign in and refresh before we see our profile icon, etc (basically signed in). so now we use useEffect
     //we want to use useEffect when /auth changes to / 
     useEffect(()=> {                  //callback function, [dependency array]
-      const token = user?.token       //does token exist? if yes send it to 'token' variable
+      const token = user?.token;       //does token exist? if yes send it to 'token' variable
       //if using manual sign up... can check JWT
 
       if(token) {                                               //if token exist,
@@ -34,17 +35,18 @@ const Navbar = () => {
 
         if(decodedToken.exp * 1000 < new Date().getTime()) logout();     //if decodedToken.exp * 1000 (in milliseconds) is lower than current time in milliseconds --> logout
       }
-      
+
       setUser(JSON.parse(localStorage.getItem('profile')))
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [location]);   
                         
 
     return (
       <AppBar className={classes.appBar} position="static" color="inherit">
-        <div className={classes.brandContainer} >
-          <Typography component={Link} to="/" className={classes.heading} variant="h2" align="center">Memories</Typography>
-          <img className={classes.image} src={memories} alt="memories" height="60" />
-        </div>
+        <Link to="/" className={classes.brandContainer} >
+          <img src={logoText} alt="icon" height="45px" />
+          <img className={classes.image} src={logo} alt="icon" height="40px" />
+        </Link>
 
         <Toolbar className={classes.toolbar}>               
           {/* In here we're gonna have some logic to show if user logged in then..show logout btn else if not..? */}

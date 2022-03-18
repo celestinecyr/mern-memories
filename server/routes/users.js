@@ -1,8 +1,7 @@
 import express from 'express';
+const router = express.Router();
 
 import { signin, signup } from '../controllers/user.js';         //must add .js (in react its ok but in node must add)
-
-const router = express.Router();
 
 router.post('/signin', signin);                      
 router.post('/signup', signup);

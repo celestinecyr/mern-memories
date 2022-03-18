@@ -1,32 +1,79 @@
 //here we create all the handlers for our routes
 //we dw all the logic inside routes folder, so we leave them in the controller folder
-
+import express from 'express';
 import mongoose from "mongoose";
 
 import PostMessage from "../models/postMessage.js";
+const router = express.Router();
 
 export const getPosts = async (req,res) => {
+    const { page } = req.query;
     try{
+        const LIMIT = 8;                                                //max no. of posts per page
+        const startIndex = (Number(page)-1) * LIMIT;                    //starting index of post on every page     
+        //#1 convert our page into number using the Number constructor (page no. becomes string when we pass it thru req.query)
+        const totalPages = await PostMessage.countDocuments({});        //we need to know how many posts we have - bc depending on that, we're gonna have a specific number of pages
+
         //retrieve all the posts that we have in the database
-        const postMessages = await PostMessage.find();              //finding something inside of the model takes time, which means it is an asynchronous action. hence we need to add 'await' and 'async'
-        // console.log(postMessages);
-        res.status(200).json(postMessages);                        //need to return something
+        //finding something inside of the model takes time, which means it is an asynchronous action. hence we need to add 'await' and 'async'
+        //const posts = await PostMessage.find(); 
+        const posts = await PostMessage.find().sort({_id: -1}).limit(LIMIT).skip(startIndex);     //sort from latest to oldest || skip to start index bc u dw to fetch ALL POSTS for page 3.       
+        //console.log(posts);
+        res.status(200).json({ 
+            data: posts, 
+            currentPage: Number(page), 
+            numberOfPages: Math.ceil(totalPages / LIMIT) 
+        });                        //need to return something
     } catch(error) {
         //if there's error
-        res.status(404).json( {message: error.message} );
+        res.status(404).json({ message: error.message });
+    }
+}
+/*
+req.params and req.query is different
+QUERY --> the route looks like /post?page=1 --> whereby we have page variable = 1
+however in the case of PARAMS --> /post/123 --> id = 123 (params for more specific data)
+*/
+export const getPostsBySearch = async (req,res) => {
+    const { searchQuery, tags } = req.query;        
+
+    try {
+        const title = new RegExp(searchQuery, "i");         // i means ignore case --> TEST, Test, and test are all the same || convert into regexp to make it easier for mongodb & mongoose to search the db
+
+        const posts = await PostMessage.find({ 
+            $or: [ { title }, { tags: { $in: tags.split(',') } } ]          //$or - find title or tags
+        });
+
+        res.json({ data: posts });              //data = posts --> and send back to front end (res)
+    } catch (error) {
+        res.status(404).json({ message: error.message }); 
     }
 }
 
-export const createPost = async (req,res) => {
-    const post = req.body;
-
-    const newPost = new PostMessage({ ...post, creator: req.userId, createdAt: new Date().toISOString() });
+export const getPost = async (req, res) => { 
+    const { id } = req.params;
 
     try {
-        await newPost.save();
-        res.status(201).json(newPost);         //201 = successful creation
+        const post = await PostMessage.findById(id);
+        
+        res.status(200).json(post);
     } catch (error) {
-        res.status(409).json( {message: error.message});
+        res.status(404).json({ message: error.message });
+    }
+};
+
+export const createPost = async (req,res) => {
+    console.log("inside createpost method");
+    const post = req.body;
+
+    const newPostMessage = new PostMessage({ ...post, creator: req.userId, createdAt: new Date().toISOString() });
+    try {
+        await newPostMessage.save();
+        res.status(201).json(newPostMessage);         //201 = successful creation
+        console.log("Created Post!")
+    } catch (error) {
+        console.log("Unable to create post");
+        res.status(409).json( { message: error.message });
     }
 }
 
@@ -82,3 +129,4 @@ export const likePost = async(req, res) => {
 
     res.json(updatedPost);
 }
+export default router;

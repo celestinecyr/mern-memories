@@ -13,7 +13,7 @@ const auth = async (req, res, next) => {
     
         let decodedData;                    //data from token itself
 
-        if(token && isCustomAuth){                      //if token is our own,
+        if(token && isCustomAuth) {                      //if token is our own,
             decodedData = jwt.verify(token, secret);
             //now that we have the decodedData, we know which user is logged in, liking the post.. etc
             req.userId = decodedData?.id;

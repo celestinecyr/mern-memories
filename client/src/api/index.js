@@ -13,7 +13,6 @@ import axios from 'axios';
 //PART 3
 const API = axios.create({ baseURL: 'http://localhost:4000' });             //create axios instance, here we don't use /posts bc we wanna route to other page also
 
-
 API.interceptors.request.use((req) => {
     if (localStorage.getItem('profile')) {              //this is where token is stored
         req.headers.Authorization = `Bearer ${JSON.parse(localStorage.getItem('profile')).token}`;
@@ -21,8 +20,10 @@ API.interceptors.request.use((req) => {
     return req;
 });
 
-export const fetchPosts = () => API.get('/posts');
-export const createPost = (newPost) => API.post('/posts', newPost);                //call back function where (newPost) is taking in the entire post --> then axios and url, and the data we r sending
+export const fetchPost = (id) => API.get(`/posts/${id}`);
+export const fetchPosts = (page) => API.get(`/posts?page=${page}`);         //turned this into template string
+export const fetchPostsBySearch = (searchQuery) => API.get(`/posts/search?searchQuery=${searchQuery.search || 'none'}&tags=${searchQuery.tags}`);                //Here we use query parameters - ?variableName=
+export const createPost = (newPost) => API.post('/posts', newPost);                         //call back function where (newPost) is taking in the entire post --> then axios and url, and the data we r sending
 export const updatePost = (id, updatedPost) => API.patch(`/posts/${id}`, updatedPost);
 export const deletePost = (id) => API.delete(`/posts/${id}`);
 export const likePost = (id) => API.patch(`/posts/${id}/likePost`);
