@@ -19,11 +19,11 @@ const PostDetails = () => {
     dispatch(getPost(id));
   }, [id]);
 
-  useEffect(() => {
-    if(post) {      //if post exists
-      dispatch(getPostsBySearch({ search: 'none', tags: post.post?.tags.join(',') }));
-    }
-  }, [posts]);
+  // useEffect(() => {
+  //   if(post) {      //if post exists
+  //     dispatch(getPostsBySearch({ search: 'none', tags: post.post?.tags.join(',') }));
+  //   }
+  // }, [posts]);
 
   if(!post) return null;
 
@@ -35,11 +35,11 @@ const PostDetails = () => {
     );
   };
 
-  const recommendedPosts = posts?.filter(({ _id }) => _id !== post?.post?._id);
-  console.log(recommendedPosts);  
+  // const recommendedPosts = posts?.filter(({ _id }) => _id !== post?.post?._id);
+  // console.log(recommendedPosts);  
   console.log('number of posts: ' + posts.length);       //empty array
 
-  const openPost = (_id) => history.push(`/posts/${_id}`);
+  //const openPost = (_id) => history.push(`/posts/${_id}`);
 
     return (
       // <Paper style={{ padding: '20px', borderRadius: '15px' }} elevation={6}><div> {post.post.title} </div></Paper>
@@ -67,24 +67,7 @@ const PostDetails = () => {
 
         {/* Recommended Posts  */}
         {/* {recommendedPosts.length} */}
-        {recommendedPosts.length !== 0 && (
-          <div className={classes.section}>
-            <Typography gutterBottom variant="h5">You might also like:</Typography>
-            <Divider />
 
-            <div className={classes.recommendedPosts}>
-              {recommendedPosts.map(({ title, name, message, likes, selectedFile, _id }) => (
-                <div style={{ margin: '20px', cursor: 'pointer' }} onClick={() => openPost(_id)} key={_id}>
-                    <Typography gutterBottom variant="h6">{title}</Typography>
-                    <Typography gutterBottom variant="subtitle2">{name}</Typography>
-                    {/* <Typography gutterBottom variant="subtitle2">{message}</Typography> */}
-                    {/* <Typography gutterBottom variant="subtitle1">Likes: {likes.length}</Typography> */}
-                    <img src={selectedFile} width="200px" alt={title} />
-                </div>
-                ))}
-            </div>
-          </div>
-        )}
       </Paper>
     )
 
