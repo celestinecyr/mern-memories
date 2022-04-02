@@ -11,8 +11,8 @@ import axios from 'axios';
 // export const likePost = (id) => axios.patch(`${url}/${id}/likePost`);
 
 //PART 3
-const API = axios.create({ baseURL: 'http://localhost:4000' });             //create axios instance, here we don't use /posts bc we wanna route to other page also
-//const API = axios.create({ baseURL: 'https://memories-mern-project.herokuapp.com' }); 
+//const API = axios.create({ baseURL: 'http://localhost:4000' });             //create axios instance, here we don't use /posts bc we wanna route to other page also
+const API = axios.create({ baseURL: 'https://memories-backendapi.herokuapp.com' }); 
 
 API.interceptors.request.use((req) => {
     if (localStorage.getItem('profile')) {              //this is where token is stored
